@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/exec"
 
 	"github.com/MowlCod/dbus-spotify/internal/config"
 	"github.com/MowlCod/dbus-spotify/internal/dbusconn"
@@ -14,6 +15,11 @@ import (
 func main() {
 	appCfg := &config.AppConfig{}
 	appCfg.ParseFlags()
+
+	_, err := exec.Command("pidof", "spotify").Output()
+	if err != nil {
+		fmt.Println("WARNING: It seems you haven't running Spotify. You have to run Spotify.")
+	}
 
 	conn, err := dbusconn.New()
 
@@ -32,9 +38,16 @@ func main() {
 	http.Handle("/pause", currentTrackHandler.Pause())
 
 	fmt.Printf(
-		"DBus spotify started on port %d.\nYou can get current track by request to /current-track endpoint.\n",
+		"INFO: DBus spotify started on port %d\n",
 		appCfg.HttpPort,
 	)
+
+	fmt.Println(`
+GET  /current-track - Get current track info
+POST /next-track - Switch to next track
+POST /prev-track - Switch to previous track
+POST /play - Start playing current track
+POST /pause - Pause current track`)
 
 	if err := http.ListenAndServe(fmt.Sprintf(":%d", appCfg.HttpPort), nil); err != nil {
 		log.Fatalln(err)
