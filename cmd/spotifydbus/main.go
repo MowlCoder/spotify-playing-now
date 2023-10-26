@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"net/http"
@@ -10,8 +9,6 @@ import (
 	"github.com/MowlCod/dbus-spotify/internal/config"
 	"github.com/MowlCod/dbus-spotify/internal/dbusconn"
 	"github.com/MowlCod/dbus-spotify/internal/handlers"
-	"github.com/MowlCod/dbus-spotify/internal/storage"
-	"github.com/MowlCod/dbus-spotify/internal/workers"
 )
 
 func main() {
@@ -26,21 +23,7 @@ func main() {
 	}
 	defer conn.Close()
 
-	trackStorage, err := storage.NewCurrentTrackStorage()
-
-	if err != nil {
-		fmt.Fprintln(os.Stderr, "Failed to create track storage:", err)
-		os.Exit(1)
-	}
-
-	updateTrackWorker := workers.NewUpdateCurrentTrackWorker(
-		trackStorage,
-		conn,
-	)
-
-	go updateTrackWorker.Start(context.Background(), appCfg.UpdateInterval)
-
-	currentTrackHandler := handlers.NewCurrentTrackHandler(trackStorage)
+	currentTrackHandler := handlers.NewCurrentTrackHandler(conn)
 
 	http.Handle("/current-track", currentTrackHandler.GetCurrentTrack())
 

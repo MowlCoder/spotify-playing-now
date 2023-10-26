@@ -1,24 +1,23 @@
 package handlers
 
 import (
-	"context"
 	"encoding/json"
 	"net/http"
 
 	"github.com/MowlCod/dbus-spotify/internal/domain"
 )
 
-type currentTrackStorage interface {
-	GetTrack(ctx context.Context) (*domain.Track, error)
+type spotifyDBusTransport interface {
+	GetCurrentTrackInfo() (*domain.Track, error)
 }
 
 type CurrentTrackHandler struct {
-	storage currentTrackStorage
+	dbusTransport spotifyDBusTransport
 }
 
-func NewCurrentTrackHandler(storage currentTrackStorage) *CurrentTrackHandler {
+func NewCurrentTrackHandler(transport spotifyDBusTransport) *CurrentTrackHandler {
 	return &CurrentTrackHandler{
-		storage: storage,
+		dbusTransport: transport,
 	}
 }
 
@@ -29,7 +28,7 @@ func (h *CurrentTrackHandler) GetCurrentTrack() http.Handler {
 			return
 		}
 
-		track, err := h.storage.GetTrack(r.Context())
+		track, err := h.dbusTransport.GetCurrentTrackInfo()
 
 		if err != nil {
 			w.WriteHeader(400)
