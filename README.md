@@ -1,7 +1,7 @@
 # Spotify Playing Now
 
 ## Overview
-The idea of this project is convert spotify dbus interface to http interface. You can serve this app on the chosen port and you will be able to get current track by using GET http request.
+The idea of this project is convert spotify dbus interface to http interface. You can serve this app on the chosen port and you will be able to get current track by using GET http request and control tracks (next, prev, play, pause) by using POST requests.
 
 ## Build & Run
 
@@ -12,7 +12,7 @@ make build
 
 ## Usage
 
-App is listening requests to `/current-track`
+App is listening requests to `GET /current-track`
 ```shell
 curl "127.0.0.1:7766/current-track"
 ```
@@ -32,14 +32,22 @@ Response will be like this:
 
 Possible status codes:
 
-- 200 - OK
-- 400 - Program haven't got current track yet
-- 405 - Method not allowed, you can send only GET request
-- 500 - Error when trying to prepare response
+- `200` - OK
+- `400` - Program can't get track from spotify
+- `405` - Method not allowed
+- `500` - Error when trying to prepare response
+
+Other handlers:
+- `POST /next-track` - Play next track
+- `POST /prev-track` - Play previous track
+- `POST /play` - Play current track
+- `POST /pause` - Pause current track
+
+They have similar status codes to `GET /current-track` and response empty body.
 
 ## Config
 You can execute program with flag `-h` and you'll see all flag options.
 
 ## TODO
 
-- Add support to track control (Play, Pause, Next, Prev)
+- ~~Add support to track control (Play, Pause, Next, Prev)~~

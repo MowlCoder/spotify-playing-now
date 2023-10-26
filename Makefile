@@ -6,3 +6,6 @@ build:
 
 run: build
 	./bin/spotify-dbus
+
+clear:
+	rm -rf ./bin/*

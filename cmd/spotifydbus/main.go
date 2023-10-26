@@ -26,6 +26,10 @@ func main() {
 	currentTrackHandler := handlers.NewCurrentTrackHandler(conn)
 
 	http.Handle("/current-track", currentTrackHandler.GetCurrentTrack())
+	http.Handle("/next-track", currentTrackHandler.NextTrack())
+	http.Handle("/prev-track", currentTrackHandler.PrevTrack())
+	http.Handle("/play", currentTrackHandler.Play())
+	http.Handle("/pause", currentTrackHandler.Pause())
 
 	fmt.Printf(
 		"DBus spotify started on port %d.\nYou can get current track by request to /current-track endpoint.\n",

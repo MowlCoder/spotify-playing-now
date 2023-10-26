@@ -26,6 +26,22 @@ func New() (*DbusConn, error) {
 	}, err
 }
 
+func (dc *DbusConn) PlayTrack() error {
+	return dc.callDBusMethod("Play")
+}
+
+func (dc *DbusConn) PauseTrack() error {
+	return dc.callDBusMethod("Pause")
+}
+
+func (dc *DbusConn) NextTrack() error {
+	return dc.callDBusMethod("Next")
+}
+
+func (dc *DbusConn) PrevTrack() error {
+	return dc.callDBusMethod("Previous")
+}
+
 func (dc *DbusConn) GetCurrentTrackInfo() (*domain.Track, error) {
 	var metaDataReply map[string]dbus.Variant
 	var playbackStatusReplay dbus.Variant
@@ -64,4 +80,15 @@ func (dc *DbusConn) GetCurrentTrackInfo() (*domain.Track, error) {
 
 func (dc *DbusConn) Close() {
 	dc.Close()
+}
+
+func (dc *DbusConn) callDBusMethod(method string) error {
+	obj := dc.conn.Object("org.mpris.MediaPlayer2.spotify", "/org/mpris/MediaPlayer2")
+	err := obj.Call("org.mpris.MediaPlayer2.Player."+method, 0).Err
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
