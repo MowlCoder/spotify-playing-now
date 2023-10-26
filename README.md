@@ -23,7 +23,8 @@ Response will be like this:
   "url": "https://open.spotify.com/track/7zHehwGCfT6befxyOenhgE",
   "artist": ["Snow Strippers"],
   "album": "The Snow Strippers",
-  "art_url": "https://i.scdn.co/image/ab67616d0000b27380ab44e51da54976bfeeb1c4","state":"Playing",
+  "art_url": "https://i.scdn.co/image/ab67616d0000b27380ab44e51da54976bfeeb1c4",
+  "state":"Playing",
   "position": 882000,
   "max_length": 144378000
 }
